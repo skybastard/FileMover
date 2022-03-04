@@ -26,6 +26,9 @@ namespace FileMover
         string testplanDestinationPath;
         string criteriaOriginPath;
         string criteriaDestinationPath;
+        string testdataOriginPath;
+        string testdataDestinationPath;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -41,6 +44,14 @@ namespace FileMover
 
             criteriaDestinationPath = Properties.Settings.Default.CriteriaDestinationPath;
             criteriaDestinationLabel.Content = criteriaDestinationPath;
+
+            testdataOriginPath = Properties.Settings.Default.TestdataOringinPath;
+            testdataOriginLabel.Content = testdataOriginPath;
+
+            testdataDestinationPath = Properties.Settings.Default.TestdataDestinationPath;
+            testdataDestinationLabel.Content = testdataDestinationPath;
+
+            
         }
 
         private void TestplanOriginBtn(object sender, RoutedEventArgs e)
@@ -77,9 +88,20 @@ namespace FileMover
 
         private void transferFilesBtn_Click(object sender, RoutedEventArgs e)
         {
-            File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)),true);
-            File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
-
+            try
+            {
+                copyCompleteLabel.Content = "copying...";
+                File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)), true);
+                File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
+                File.Copy(testdataOriginPath, Path.Combine(testdataDestinationPath, Path.GetFileName(testdataOriginPath)), true);
+                copyCompleteLabel.Content = "Files Copied";
+                
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message + " " + error.StackTrace);                
+            }
+            
         }
 
         private void CriteriaOriginBtn(object sender, RoutedEventArgs e)
@@ -111,6 +133,40 @@ namespace FileMover
                 criteriaDestinationPath = dialog.FileName;
                 criteriaDestinationLabel.Content = dialog.FileName;
                 Properties.Settings.Default.CriteriaDestinationPath = criteriaDestinationPath;
+                Properties.Settings.Default.Save();
+            }
+
+        }
+
+        private void TestDataOriginBtn(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//TODO put source as initial folder
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (string filename in openFileDialog.FileNames)
+                {
+                    testdataOriginPath = openFileDialog.FileName;
+                    testdataOriginLabel.Content = openFileDialog.FileName;
+                    Properties.Settings.Default.TestdataOringinPath = testdataOriginPath;
+                    Properties.Settings.Default.Save();
+                }
+            }
+
+        }
+
+        private void TestDataDestinationBtn(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = Directory.GetCurrentDirectory();
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+
+                testdataDestinationPath = dialog.FileName;
+                testdataDestinationLabel.Content = dialog.FileName;
+                Properties.Settings.Default.TestdataDestinationPath = testdataDestinationPath;
                 Properties.Settings.Default.Save();
             }
 

@@ -70,5 +70,29 @@ namespace FileMover.Properties {
                 this["CriteriaDestinationPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TestdataOringinPath {
+            get {
+                return ((string)(this["TestdataOringinPath"]));
+            }
+            set {
+                this["TestdataOringinPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TestdataDestinationPath {
+            get {
+                return ((string)(this["TestdataDestinationPath"]));
+            }
+            set {
+                this["TestdataDestinationPath"] = value;
+            }
+        }
     }
 }
