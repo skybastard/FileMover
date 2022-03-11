@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
+using System.ServiceProcess;
+using System.Threading;
+using System.ComponentModel;
 
 namespace FileMover
 {
@@ -28,6 +31,7 @@ namespace FileMover
         string criteriaDestinationPath;
         string testdataOriginPath;
         string testdataDestinationPath;
+        private static BackgroundWorker backgroundWorker;
 
         public MainWindow()
         {
@@ -50,6 +54,9 @@ namespace FileMover
 
             testdataDestinationPath = Properties.Settings.Default.TestdataDestinationPath;
             testdataDestinationLabel.Content = testdataDestinationPath;
+
+            backgroundWorker = new BackgroundWorker();
+
 
             
         }
@@ -88,20 +95,15 @@ namespace FileMover
 
         private void transferFilesBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                copyCompleteLabel.Content = "copying...";
-                File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)), true);
-                File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
-                File.Copy(testdataOriginPath, Path.Combine(testdataDestinationPath, Path.GetFileName(testdataOriginPath)), true);
-                copyCompleteLabel.Content = "Files Copied";
-                
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.Message + " " + error.StackTrace);                
-            }
-            
+            backgroundWorker.DoWork += BackgroundWorker_DoWork; // move files and thread.sleep in background not in UI
+            backgroundWorker.RunWorkerAsync();
+        }
+
+        private void BackgroundWorker_DoWork(object? sender, DoWorkEventArgs e)
+        {
+            StopExcecManager();
+            MoveFiles();
+            StartExcecManager();
         }
 
         private void CriteriaOriginBtn(object sender, RoutedEventArgs e)
@@ -170,6 +172,59 @@ namespace FileMover
                 Properties.Settings.Default.Save();
             }
 
+        }
+
+        public void MoveFiles()
+        {
+            try
+            {                
+                File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)), true);
+                File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
+                File.Copy(testdataOriginPath, Path.Combine(testdataDestinationPath, Path.GetFileName(testdataOriginPath)), true);
+                copyCompleteLabel.Content = "done";
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message + " " + error.StackTrace);
+            }
+        }
+
+
+
+
+
+
+        public static void StopExcecManager()
+        {
+            try
+            {
+                ServiceController serviceController = new ServiceController("ExcecManager");
+                TimeSpan timeout = TimeSpan.FromMilliseconds(7000);
+                serviceController.Stop();
+                serviceController.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+                Thread.Sleep(1000);
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message + " " + error.StackTrace);
+            }         
+            
+        }
+
+        public static void StartExcecManager()
+        {
+            try
+            {
+                ServiceController serviceController = new ServiceController("ExcecManager");
+                TimeSpan timeout = TimeSpan.FromMilliseconds(15000);
+                serviceController.Start();
+                serviceController.WaitForStatus(ServiceControllerStatus.Running, timeout);
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message + " " + error.StackTrace);
+            }
+            
         }
     }
 }

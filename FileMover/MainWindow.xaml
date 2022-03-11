@@ -16,7 +16,7 @@
         <Button Grid.Column="1" Content="To" HorizontalAlignment="Left" Margin="6,71,0,0" VerticalAlignment="Top" Click="TestplanDestinationBtn" Width="40" BorderBrush="#FF96AFBA"/>
         <Label x:Name="testplanOriginLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,43,0,0" VerticalAlignment="Top"/>
         <Label x:Name="testplanDestinationLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,68,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="transferFilesBtn" Content="Transfer Files" HorizontalAlignment="Left" Margin="10,336,0,0" VerticalAlignment="Top" Width="174" Click="transferFilesBtn_Click" Grid.ColumnSpan="2"/>
+        <Button x:Name="transferFilesBtn" Content="Transfer Files" HorizontalAlignment="Left" Margin="10,372,0,0" VerticalAlignment="Top" Width="174" Click="transferFilesBtn_Click" Grid.ColumnSpan="2"/>
         <Label Content="Criteria" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Normal" Grid.ColumnSpan="2" Height="31" Width="163"/>
         <Button Content="From" HorizontalAlignment="Left" Margin="6,130,0,0" VerticalAlignment="Top" Grid.Column="1" Width="40" Click="CriteriaOriginBtn"/>
         <Label x:Name="criteriaOriginLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,127,0,0" VerticalAlignment="Top"/>
@@ -27,7 +27,9 @@
         <Button Grid.Column="1" Content="To" HorizontalAlignment="Left" Margin="6,247,0,0" VerticalAlignment="Top" Width="40" Click="TestDataDestinationBtn"/>
         <Label x:Name="testdataOriginLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,219,0,0" VerticalAlignment="Top"/>
         <Label x:Name="testdataDestinationLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,244,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="copyCompleteLabel" Grid.Column="1" Content="copy complete" HorizontalAlignment="Left" Margin="190,333,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="copyCompleteLabel" Grid.Column="1" Content="waiting..." HorizontalAlignment="Left" Margin="191,369,0,0" VerticalAlignment="Top"/>
+        <Label Grid.Column="1" Content="dll's" HorizontalAlignment="Left" Margin="6,272,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="10,303,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
