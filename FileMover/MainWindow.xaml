@@ -29,7 +29,10 @@
         <Label x:Name="testdataDestinationLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,244,0,0" VerticalAlignment="Top"/>
         <Label x:Name="copyCompleteLabel" Grid.Column="1" Content="waiting..." HorizontalAlignment="Left" Margin="191,369,0,0" VerticalAlignment="Top"/>
         <Label Grid.Column="1" Content="dll's" HorizontalAlignment="Left" Margin="6,272,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="10,303,0,0" VerticalAlignment="Top"/>
+        <Button Grid.Column="1" Content="From" HorizontalAlignment="Left" Margin="6,303,0,0" VerticalAlignment="Top" Width="40" Click="DllOriginBtn"/>
+        <Button Grid.Column="1" Content="To" HorizontalAlignment="Left" Margin="6,328,0,0" VerticalAlignment="Top" Width="40" Click="DllDestinationBtn"/>
+        <Label x:Name="dllOriginLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,300,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="dllDestinationLabel" Grid.Column="1" Content="Label" HorizontalAlignment="Left" Margin="51,325,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

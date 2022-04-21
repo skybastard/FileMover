@@ -94,5 +94,29 @@ namespace FileMover.Properties {
                 this["TestdataDestinationPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DllOriginPath {
+            get {
+                return ((string)(this["DllOriginPath"]));
+            }
+            set {
+                this["DllOriginPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DllDestinationPath {
+            get {
+                return ((string)(this["DllDestinationPath"]));
+            }
+            set {
+                this["DllDestinationPath"] = value;
+            }
+        }
     }
 }

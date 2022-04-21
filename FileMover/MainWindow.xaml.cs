@@ -17,6 +17,7 @@ using System.IO;
 using System.ServiceProcess;
 using System.Threading;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace FileMover
 {
@@ -31,6 +32,8 @@ namespace FileMover
         string criteriaDestinationPath;
         string testdataOriginPath;
         string testdataDestinationPath;
+        string dllOriginPath;
+        string dllDestinationPath;
         private static BackgroundWorker backgroundWorker;
 
         public MainWindow()
@@ -55,10 +58,16 @@ namespace FileMover
             testdataDestinationPath = Properties.Settings.Default.TestdataDestinationPath;
             testdataDestinationLabel.Content = testdataDestinationPath;
 
+            dllOriginPath = Properties.Settings.Default.DllOriginPath;
+            dllOriginLabel.Content = dllOriginPath;
+
+            dllDestinationPath = Properties.Settings.Default.DllDestinationPath;
+            dllDestinationLabel.Content = dllDestinationPath;
+
             backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += BackgroundWorker_DoWork; // move files and thread.sleep in background not in UI
 
 
-            
         }
 
         private void TestplanOriginBtn(object sender, RoutedEventArgs e)
@@ -93,18 +102,7 @@ namespace FileMover
             }
         }
 
-        private void transferFilesBtn_Click(object sender, RoutedEventArgs e)
-        {
-            backgroundWorker.DoWork += BackgroundWorker_DoWork; // move files and thread.sleep in background not in UI
-            backgroundWorker.RunWorkerAsync();
-        }
-
-        private void BackgroundWorker_DoWork(object? sender, DoWorkEventArgs e)
-        {
-            StopExcecManager();
-            MoveFiles();
-            StartExcecManager();
-        }
+       
 
         private void CriteriaOriginBtn(object sender, RoutedEventArgs e)
         {
@@ -174,21 +172,7 @@ namespace FileMover
 
         }
 
-        public void MoveFiles()
-        {
-            try
-            {                
-                File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)), true);
-                File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
-                File.Copy(testdataOriginPath, Path.Combine(testdataDestinationPath, Path.GetFileName(testdataOriginPath)), true);
-                copyCompleteLabel.Content = "done";
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.Message + " " + error.StackTrace);
-            }
-        }
-
+        
 
 
 
@@ -198,7 +182,7 @@ namespace FileMover
         {
             try
             {
-                ServiceController serviceController = new ServiceController("ExcecManager");
+                ServiceController serviceController = new ServiceController("ExecManager(Raptor2)");
                 TimeSpan timeout = TimeSpan.FromMilliseconds(7000);
                 serviceController.Stop();
                 serviceController.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
@@ -215,7 +199,7 @@ namespace FileMover
         {
             try
             {
-                ServiceController serviceController = new ServiceController("ExcecManager");
+                ServiceController serviceController = new ServiceController("ExecManager(Raptor2)");
                 TimeSpan timeout = TimeSpan.FromMilliseconds(15000);
                 serviceController.Start();
                 serviceController.WaitForStatus(ServiceControllerStatus.Running, timeout);
@@ -226,5 +210,67 @@ namespace FileMover
             }
             
         }
+
+      
+
+        private void DllOriginBtn(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = Directory.GetCurrentDirectory();
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                dllOriginPath = dialog.FileName;
+                dllOriginLabel.Content = dllOriginPath;
+                Properties.Settings.Default.DllOriginPath = dllOriginPath;
+                Properties.Settings.Default.Save();
+
+            }
+        }
+
+        private void DllDestinationBtn(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = Directory.GetCurrentDirectory();
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+
+                dllDestinationPath = dialog.FileName;
+                dllDestinationLabel.Content = dllDestinationPath;
+                Properties.Settings.Default.DllDestinationPath = dllDestinationPath;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void transferFilesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //backgroundWorker.RunWorkerAsync();
+            //backgroundWorker.Dispose();
+            MoveFiles();
+        }
+
+        private void BackgroundWorker_DoWork(object? sender, DoWorkEventArgs e)
+        {
+            StopExcecManager();
+            MoveFiles();
+            StartExcecManager();
+        }
+
+        public void MoveFiles()
+        {
+            try
+            {
+                File.Copy(testplanOriginPath, Path.Combine(testplanDestinationPath, Path.GetFileName(testplanOriginPath)), true);
+                File.Copy(criteriaOriginPath, Path.Combine(criteriaDestinationPath, Path.GetFileName(criteriaOriginPath)), true);
+                File.Copy(testdataOriginPath, Path.Combine(testdataDestinationPath, Path.GetFileName(testdataOriginPath)), true);
+                Process.Start("cmd.exe", "/C XCOPY " + dllOriginPath + " " + dllDestinationPath + " " + "/E /S /Y");               
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message + " " + error.StackTrace);
+            }
+        }
+
     }
 }
